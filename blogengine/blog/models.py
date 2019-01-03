@@ -10,7 +10,7 @@ class Post(models.Model):
     date_pub = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField('Tag', blank=True, related_name='posts')
 
-    def absolute_url(self):
+    def get_absolute_url(self):
         return reverse('post_detail_url', kwargs={'slug': self.slug})
 
     def __str__(self):
@@ -20,6 +20,11 @@ class Post(models.Model):
 class Tag(models.Model):
     title = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, unique=True)
+
+
+    def get_absolute_url(self):
+        return reverse('tag_detail_url', kwargs={'slug': self.slug})
+
 
     def __str__(self):
         return '{}'.format(self.title)
