@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Post, Tag
+from django.views.generic import View
 
 # Create your views here.
 def posts_list(request):
@@ -7,9 +8,15 @@ def posts_list(request):
     return render(request, 'blog/index.html', context={'posts': posts})
 
 
-def post_detail(request, slug):
-    post = Post.objects.get(slug__iexact=slug)
-    return render(request, 'blog/post_detail.html', context={'post':post})
+# def post_detail(request, slug):
+#     post = Post.objects.get(slug__iexact=slug)
+#     return render(request, 'blog/post_detail.html', context={'post':post})
+
+
+class PostDetail(View):
+    def get(self, request, slug):
+        post = Post.objects.get(slug__iexact=slug)
+        return render(request, 'blog/post_detail.html', context={'post': post})
 
 
 def tags_list(request):
