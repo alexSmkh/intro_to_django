@@ -2,13 +2,12 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views.generic import View
 from django.shortcuts import get_object_or_404
-from .forms import TagForm
+from .forms import TagForm, PostForm
 
 from .models import Post, Tag
 from .utils import ObjectDetailMixin
 
 
-# Create your views here.
 def posts_list(request):
     posts = Post.objects.all()
     return render(request, 'blog/index.html', context={'posts': posts})
@@ -22,6 +21,19 @@ def tags_list(request):
 class PostDetail(ObjectDetailMixin, View):
     model = Post
     template = 'blog/post_detail.html'
+
+
+class PostCreate(View):
+    def get(self, request):
+        form = PostForm()
+        return render(request, 'blog/post_create_form.html', context={'form':form})
+
+    def post(self, request):
+        bound_form = PostForm(request.POST)
+        if bound_form.is_valid():
+            new_post = bound_form.save()
+            return redirect(new_post)
+        return render(request, 'blog/post_create_form.html', context={'form':bound_form})
 
 
 class TagCreate(View):
