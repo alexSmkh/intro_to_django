@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import View
 from django.shortcuts import get_object_or_404
 from .forms import TagForm, PostForm
@@ -43,27 +44,19 @@ class TagUpdate(ObjectUpdateMixin, View):
     model = Tag
     model_form = TagForm
     template = 'blog/tag_update_form.html'
-    # def get(self, request, slug):
-    #     tag = Tag.objects.get(slug__iexact=slug)
-    #     bound_form = TagForm(instance=tag)
-    #     return render(
-    #         request,
-    #         'blog/tag_update_form.html',
-    #         context={'form': bound_form, 'tag': tag})
-    #
-    # def post(self, request, slug):
-    #     tag = Tag.objects.get(slug__iexact=slug)
-    #     bound_form = TagForm(request.POST, instance=tag)
-    #
-    #     if bound_form.is_valid():
-    #         new_tag = bound_form.save()
-    #         return redirect(new_tag)
-    #     return render(
-    #         request,
-    #         'blog/tag_update_form',
-    #         context={'form': bound_form, 'tag': tag})
 
 
 class TagDetail(ObjectDetailMixin, View):
     model = Tag
     template = 'blog/tag_detail.html'
+
+
+class TagDelete(View):
+    def get(self, request, slug):
+        tag = Tag.objects.get(slug__iexact=slug)
+        return render(request, 'blog/tag_delete_form.html', {'tag': tag})
+
+    def post(self, request, slug):
+        tag = Tag.objects.get(slug__iexact=slug)
+        tag.delete()
+        return redirect(reverse('tags_list_url'))
