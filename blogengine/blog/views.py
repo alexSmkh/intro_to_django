@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from .forms import TagForm, PostForm
 
 from .models import Post, Tag
-from .utils import ObjectDetailMixin, ObjectCreateMixin, ObjectUpdateMixin
+from .utils import ObjectDetailMixin, ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 
 
 def posts_list(request):
@@ -51,12 +51,15 @@ class TagDetail(ObjectDetailMixin, View):
     template = 'blog/tag_detail.html'
 
 
-class TagDelete(View):
-    def get(self, request, slug):
-        tag = Tag.objects.get(slug__iexact=slug)
-        return render(request, 'blog/tag_delete_form.html', {'tag': tag})
-
-    def post(self, request, slug):
-        tag = Tag.objects.get(slug__iexact=slug)
-        tag.delete()
-        return redirect(reverse('tags_list_url'))
+class TagDelete(ObjectDeleteMixin, View):
+    model = Tag
+    template = 'blog/tag_delete_form.html'
+    redirect_url = 'tags_list_url'
+    # def get(self, request, slug):
+    #     tag = Tag.objects.get(slug__iexact=slug)
+    #     return render(request, 'blog/tag_delete_form.html', {'tag': tag})
+    #
+    # def post(self, request, slug):
+    #     tag = Tag.objects.get(slug__iexact=slug)
+    #     tag.delete()
+    #     return redirect(reverse('tags_list_url'))
