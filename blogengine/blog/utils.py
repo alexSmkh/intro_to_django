@@ -13,7 +13,11 @@ class ObjectDetailMixin:
         return render(
             request,
             self.template,
-            context={self.model.__name__.lower(): obj}
+            context={
+                self.model.__name__.lower(): obj,
+                'admin_object': obj,
+                'detail': True
+            }
         )
 
 
@@ -48,7 +52,8 @@ class ObjectUpdateMixin:
         return render(
             request,
             self.template,
-            context={'form': bound_form, self.model.__name__.lower(): obj})
+            context={'form': bound_form,
+                     self.model.__name__.lower(): obj})
 
     def post(self, request, slug):
         obj = self.model.objects.get(slug__iexact=slug)
@@ -69,7 +74,9 @@ class ObjectDeleteMixin:
 
     def get(self, request, slug):
         obj = self.model.objects.get(slug__iexact=slug)
-        return render(request, self.template, {self.model.__name__.lower(): obj})
+        return render(request,
+                      self.template,
+                      {self.model.__name__.lower(): obj})
 
     def post(self, request, slug):
         obj = self.model.objects.get(slug__iexact=slug)
